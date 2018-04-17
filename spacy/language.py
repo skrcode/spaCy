@@ -404,6 +404,15 @@ class Language(object):
         # Allow dict of args to GoldParse, instead of GoldParse objects.
         gold_objs = []
         doc_objs = []
+
+        # Add not found labels to gold
+        for gold in golds:
+            for name, proc in list(self.pipeline):
+                if isinstance(proc, TextCategorizer):
+                    for j, label in enumerate(proc.labels):
+                        if label not in gold['cats']:
+                            gold['cats'][label]=0
+
         for doc, gold in zip(docs, golds):
             if isinstance(doc, basestring_):
                 doc = self.make_doc(doc)
